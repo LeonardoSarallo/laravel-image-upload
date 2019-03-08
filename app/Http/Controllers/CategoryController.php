@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -91,7 +92,11 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->all();
+
+        $poster = Storage::disk('public')->put('categories_poster', $data['poster_file']);
+
         $data['slug'] = Str::slug($data['name']);
+        $data['poster'] = $poster;
         $category->update($data);
 
         return redirect()->route('categories.index');
